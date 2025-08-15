@@ -1,0 +1,32 @@
+name: Renovate Auto-Approve
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+    if: github.actor == 'renovate[bot]'
+    
+    steps:
+      - name: Auto-approve PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.pulls.createReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                event: 'APPROVE',
+                body: 'Auto-approved Renovate dependency update (merge handled by GitHub auto-merge settings)'
+              });
+              console.log('PR approved successfully');
+            } catch (error) {
+              console.log('Error approving PR:', error.message);
+              // Continue anyway, approval might not be required
+            }
