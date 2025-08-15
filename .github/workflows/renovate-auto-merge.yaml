@@ -5,7 +5,8 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  pull-requests: write
+  contents: write # Allows the workflow to write to the repository
+  pull-requests: write # Allows the workflow to create and approve pull requests
 
 jobs:
   auto-approve:
